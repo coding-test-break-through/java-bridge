@@ -1,19 +1,57 @@
-package bridge;
+package bridge.View.InputView;
+
+import static bridge.Constants.InputPromptMsg.ASK_BRIDGE_SIZE;
+import static bridge.Constants.InputPromptMsg.ASK_GAME_RETRY;
+import static bridge.Constants.InputPromptMsg.ASK_MOVE_DIRECTION;
+import static bridge.Constants.InputPromptMsg.INITIAL_NOTICE;
+
+import bridge.View.InputView.InputValidator.BridgeSizeInputValidator;
+import bridge.View.InputView.InputValidator.MoveDirInputValidator;
+import bridge.View.InputView.InputValidator.GameCommandInputValidator;
+import bridge.View.InputView.InputValidator.Validator;
+import camp.nextstep.edu.missionutils.Console;
 
 public class InputView {
 
+    Validator bridgeSizeInputValidator = new BridgeSizeInputValidator();
+    Validator moveDirInputValidator = new MoveDirInputValidator();
+    Validator retryInputValidator = new GameCommandInputValidator();
+
+    public InputView(){
+        System.out.println(INITIAL_NOTICE.getMessage());
+    }
+
     // 다리의 길이를 입력받는다.
-    public int readBridgeSize() {
-        return 0;
+    public Integer readBridgeSize(){
+        return Integer.parseInt(inputWithValidation(
+                ASK_BRIDGE_SIZE.getMessage(),
+                bridgeSizeInputValidator));
     }
 
     // 사용자가 이동할 칸을 입력받는다.
     public String readMoving() {
-        return null;
+        return inputWithValidation(
+                ASK_MOVE_DIRECTION.getMessage(),
+                moveDirInputValidator);
     }
 
     // 사용자가 게임을 다시 시도할지 종료할지 여부를 입력받는다.
     public String readGameCommand() {
-        return null;
+        return inputWithValidation(
+                ASK_GAME_RETRY.getMessage(),
+                retryInputValidator);
+    }
+
+    private String inputWithValidation(String message, Validator validator) {
+        while (true) {
+            try {
+                System.out.println(message);
+                String userInput = Console.readLine();
+                validator.validate(userInput);
+                return userInput;
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }
