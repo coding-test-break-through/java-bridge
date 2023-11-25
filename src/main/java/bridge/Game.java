@@ -1,39 +1,53 @@
 package bridge;
 
 public class Game {
-    OutputView outputView = new OutputView();
-    InputView inputView = new InputView();
-    BridgeGame bridgeGame;
-    boolean isGameSet = false;
-    boolean isSuccess = false;
-    int bridgeSize;
+    private final OutputView outputView = new OutputView();
+    private final InputView inputView = new InputView();
+    private BridgeGame bridgeGame;
+    private boolean isGameSet = false;
+    private boolean isSuccess = false;
+    private int bridgeSize;
 
     void start() {
         setupBridgeDetails();
         while (!isGameSet) {
             play();
         }
-        System.out.println("최종 게임 결과");
-        bridgeGame.printResult();
-        outputView.printResult(isSuccess, bridgeGame.getAttemptCount());
+        showResult();
     }
 
-    void setupBridgeDetails() {
+    private void setupBridgeDetails() {
         outputView.printStart();
         outputView.printLengthRequestMessage();
         bridgeSize = inputView.readBridgeSize();
         bridgeGame = new BridgeGame(bridgeSize);
     }
 
-    void play() {
+    private void play() {
+        moving();
+        checkEnd();
+    }
+
+    private void moving() {
         outputView.printMovingRequestMessage();
-        if (!bridgeGame.move(inputView.readMoving())) {
+        boolean canMove = bridgeGame.move(inputView.readMoving());
+        outputView.printMap(bridgeGame.getUpRoad(), bridgeGame.getDownRoad());
+        if (!canMove) {
             outputView.printGameCommandRequestMessage();
             isGameSet = bridgeGame.retry(inputView.readGameCommand());
         }
+    }
+
+    private void checkEnd() {
         if (bridgeGame.getLocation() == bridgeSize) {
             isSuccess = true;
             isGameSet = true;
         }
+    }
+
+    private void showResult() {
+        outputView.printResultStart();
+        outputView.printMap(bridgeGame.getUpRoad(), bridgeGame.getDownRoad());
+        outputView.printResult(isSuccess, bridgeGame.getAttemptCount());
     }
 }

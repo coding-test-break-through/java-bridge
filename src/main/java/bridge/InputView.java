@@ -15,10 +15,9 @@ public class InputView {
         while (true) {
             try {
                 String inputBridgeSize = Console.readLine();
-                Validator.checkInteger(inputBridgeSize);
-                int bridgeSize = Integer.parseInt(inputBridgeSize);
-                Validator.checkBridgeRange(bridgeSize);
-                return bridgeSize;
+                Validator.checkBridgeSize(inputBridgeSize);
+                System.out.println();
+                return Integer.parseInt(inputBridgeSize);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }

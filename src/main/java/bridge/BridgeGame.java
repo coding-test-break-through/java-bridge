@@ -1,6 +1,5 @@
 package bridge;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,17 +7,27 @@ import java.util.Objects;
  * 다리 건너기 게임을 관리하는 클래스
  */
 public class BridgeGame {
-    final List<String> bridgeStatus;
-    BridgeNumberGenerator bridgeNumberGenerator = new BridgeRandomNumberGenerator();
-    BridgeMaker bridgeMaker = new BridgeMaker(bridgeNumberGenerator);
-    int location = 0;
-    int attemptCount;
-    StringBuilder upRoad;
-    StringBuilder downRoad;
+    private static final String UPPER_BRIDGE = "U";
+    private static final String LOWER_BRIDGE = "D";
+    private static final String START_ROAD = "[ ";
+    private static final String SUCCESS = "O";
+    private static final String FAIL = "X";
+    private static final String EMPTY = " ";
+    private static final String ROAD_SEPARATOR = " | ";
+
+    private final List<String> bridgeStatus;
+    private int location = 0;
+    private int attemptCount;
+    private StringBuilder upRoad;
+    private StringBuilder downRoad;
 
     BridgeGame(int input) {
+        BridgeNumberGenerator bridgeNumberGenerator = new BridgeRandomNumberGenerator();
+        BridgeMaker bridgeMaker = new BridgeMaker(bridgeNumberGenerator);
         bridgeStatus = bridgeMaker.makeBridge(input);
         attemptCount = 1;
+        upRoad = new StringBuilder(START_ROAD);
+        downRoad = new StringBuilder(START_ROAD);
     }
 
     /**
@@ -27,13 +36,10 @@ public class BridgeGame {
      * 이동을 위해 필요한 메서드의 반환 타입(return type), 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
     public boolean move(String input) {
-        if (Objects.equals(bridgeStatus.get(location), input)) {
-            location++;
-            printLocationTrue();
-            return true;
-        }
-        printLocationFalse();
-        return false;
+        boolean canMove = Objects.equals(bridgeStatus.get(location), input);
+        updateRoad(canMove);
+        location++;
+        return canMove;
     }
 
     /**
@@ -45,6 +51,8 @@ public class BridgeGame {
         if (Objects.equals(input, "R")) {
             attemptCount++;
             location = 0;
+            upRoad = new StringBuilder(START_ROAD);
+            downRoad = new StringBuilder(START_ROAD);
             return false;
         }
         return true;
@@ -58,57 +66,42 @@ public class BridgeGame {
         return location;
     }
 
-    void printLocationTrue() {
-        upRoad = new StringBuilder("[");
-        downRoad = new StringBuilder("[");
-        for (int i = 0; i < location; i++) {
-            if(Objects.equals(bridgeStatus.get(i), "U")) {
-                upRoad.append(" O |");
-                downRoad.append("   |");
-            }
-            if (Objects.equals(bridgeStatus.get(i), "D")) {
-                upRoad.append("   |");
-                downRoad.append(" O |");
-            }
-        }
-        upRoad = new StringBuilder(upRoad.substring(0, upRoad.length() - 2) + " ]");
-        downRoad = new StringBuilder(downRoad.substring(0, downRoad.length() - 2) + " ]");
-        System.out.println(upRoad);
-        System.out.println(downRoad);
-        System.out.println();
+    public String getUpRoad() {
+        return upRoad.toString();
     }
 
-    void printLocationFalse() {
-        upRoad = new StringBuilder("[");
-        downRoad = new StringBuilder("[");
-        for (int i = 0; i < location; i++) {
-            if(Objects.equals(bridgeStatus.get(i), "U")) {
-                upRoad.append(" O |");
-                downRoad.append("   |");
-            }
-            if (Objects.equals(bridgeStatus.get(i), "D")) {
-                upRoad.append("   |");
-                downRoad.append(" O |");
-            }
-        }
-        if(Objects.equals(bridgeStatus.get(location), "U")) {
-            upRoad.append("   |");
-            downRoad.append(" X |");
-        }
-        if (Objects.equals(bridgeStatus.get(location), "D")) {
-            upRoad.append(" X |");
-            downRoad.append("   |");
-        }
-        upRoad = new StringBuilder(upRoad.substring(0, upRoad.length() - 2) + " ]");
-        downRoad = new StringBuilder(downRoad.substring(0, downRoad.length() - 2) + " ]");
-        System.out.println(upRoad);
-        System.out.println(downRoad);
-        System.out.println();
+    public String getDownRoad() {
+        return downRoad.toString();
     }
 
-    void printResult() {
-        System.out.println(upRoad);
-        System.out.println(downRoad);
-        System.out.println();
+    private void updateRoad(boolean canMove) {
+        if(canMove) {
+            updateSuccessRoad();
+            return;
+        }
+        updateFailureRoad();
+    }
+
+    private void updateSuccessRoad() {
+        if (bridgeStatus.get(location).equals(UPPER_BRIDGE)) {
+            appendRoad(SUCCESS, EMPTY);
+        }
+        if (bridgeStatus.get(location).equals(LOWER_BRIDGE)) {
+            appendRoad(EMPTY, SUCCESS);
+        }
+    }
+
+    private void updateFailureRoad() {
+        if (bridgeStatus.get(location).equals(UPPER_BRIDGE)) {
+            appendRoad(EMPTY, FAIL);
+        }
+        if (bridgeStatus.get(location).equals(LOWER_BRIDGE)) {
+            appendRoad(FAIL, EMPTY);
+        }
+    }
+
+    private void appendRoad(String upSymbol, String downSymbol) {
+        upRoad.append(upSymbol).append(ROAD_SEPARATOR);
+        downRoad.append(downSymbol).append(ROAD_SEPARATOR);
     }
 }
