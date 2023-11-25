@@ -19,7 +19,7 @@ public class BridgeController {
     private final InputView inputView;
     private final OutputView outputView;
 
-    private int gameCount;
+    private int totalGameCount;
 
     public BridgeController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -41,9 +41,11 @@ public class BridgeController {
     private void playGame(BridgeGame bridgeGame, int gameCount) {
         List<BridgeMapDto> bridgeResults = new ArrayList<>();
 
-        for (int index = 1; index == gameCount; index++) {
+        for (int index = 1; index <= gameCount; index++) {
             String selectBridge = inputBridgeSelect();
             bridgeResults.add(bridgeGame.move(selectBridge, index));
+            this.totalGameCount++;
+
             if (!showSuccessResult(bridgeResults)) {
                 showReGameOrNot(bridgeGame, gameCount);
                 break;
@@ -53,6 +55,7 @@ public class BridgeController {
     }
 
     private boolean showSuccessResult(List<BridgeMapDto> bridgeMaps) {
+        System.out.println();
         BridgeResultDto results = new OutputFormatter().formatResult(bridgeMaps);
         outputView.printMap(results);
 
@@ -73,7 +76,12 @@ public class BridgeController {
     private void showFinalResult(List<BridgeMapDto> bridgeMaps) {
         BridgeResultDto results = new OutputFormatter().formatResult(bridgeMaps);
 
+        outputView.printMessage(Output.FINAL_RESULT);
+        outputView.printMap(results);
 
+        outputView.printfMessage(Output.IS_GAME_SUCCEED_MESSAGE, new OutputFormatter().isSucceedGame(results.isEnds()));
+        outputView.println();
+        outputView.printfMessage(Output.TOTAL_PLAY_TIME_MESSAGE, totalGameCount);
     }
 
     private String inputRestartOrNot() {

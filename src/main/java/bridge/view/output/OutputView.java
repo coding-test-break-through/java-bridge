@@ -21,6 +21,7 @@ public class OutputView {
         for (StringBuilder result : bridgeResultDto.result()) {
             System.out.println(result);
         }
+        System.out.println();
     }
 
     /**
@@ -41,5 +42,6 @@ public class OutputView {
 
     public void printfMessage(Output output, Object... args) {
         System.out.printf(output.message, args);
+        System.out.println();
     }
 }
