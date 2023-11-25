@@ -104,7 +104,7 @@
         }
         ```
   - BridgeGame 인스턴스를 만들고 그 하나를 재사용하면서 쓰게 만든다
-  - 
+
 
 - BridgeMaker 클래스
     - 필드(인스턴스 변수) 추가, 변경 가능
@@ -121,7 +121,7 @@
       - 무작위 값이 0인 경우 아래 칸, 1인 경우 위 칸이 건널 수 있는 칸이 된다. 
       - 위 칸을 건널 수 있는 경우 U, 아래 칸을 건널 수 있는 경우 D값으로 나타낸다.
     - BridgeRandomNumberGenerator 클래스를 이용한다
-        - Random 값 추출은 제공된 `bridge.BridgeRandomNumberGenerator`의 `generate()`를 활용
+        - Random 값 추출은 제공된 `BridgeRandomNumberGenerator`의 `generate()`를 활용
         - 0 혹은 1을 추출하는 클래스
           - 0이 아래 칸, 1이 위칸
         - 클래스의 코드는 변경 불가
