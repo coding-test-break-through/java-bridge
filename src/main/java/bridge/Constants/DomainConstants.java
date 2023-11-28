@@ -9,9 +9,9 @@ public class DomainConstants {
     public static final String GAME_COMMAND_QUIT = "Q";
     public static final String MAP_PRINT_START = "[";
     public static final String MAP_PRINT_END = "]";
-    public static final String MAP_PRINT_SPLIT = " | ";
-    public static final String MAP_PRINT_SUCCESS = "O";
-    public static final String MAP_PRINT_FAIL = "X";
+    public static final String MAP_PRINT_SPLIT = "|";
+    public static final String MAP_PRINT_SUCCESS = " O ";
+    public static final String MAP_PRINT_FAIL = " X ";
     public static final String FINAL_GAME_CLEAR = "성공";
     public static final String FINAL_GAME_FAIL = "실패";
 }
